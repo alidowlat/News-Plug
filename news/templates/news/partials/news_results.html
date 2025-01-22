@@ -1,0 +1,19 @@
+{% load custom_tags %}
+<div class="group relative rounded-base p-px border-gradient before:absolute before:-inset-px before:h-[calc(100%+2px)] before:w-[calc(100%+2px)] before:rounded-base">
+    <div>
+        <a href="{{ article.url }}" target="_blank">
+            <div class="relative rounded-xl bg-muted p-2 shadow-base">
+                <div class="mb-2 md:mb-5">
+                    <img alt="blog" class="w-80 h-[130px] rounded-lg rounded-bl-3xl"
+                         src="{{ article.urlToImage }}"/>
+                </div>
+                <div class="mb-2">
+                    <p class="line-clamp-2 h-10 text-sm md:h-12 md:text-base">{{ article.title }}</p>
+                </div>
+                <div class="flex justify-end">
+                    <p class="text-xs text-primary xs:text-sm">{{ article.publishedAt|format_date }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>

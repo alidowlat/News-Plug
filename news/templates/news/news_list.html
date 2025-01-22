@@ -1,0 +1,165 @@
+{% extends 'shared/_layout.html' %}
+{% load custom_tags %}
+
+{% block title %}
+    News Plug | By Ali Dolat
+{% endblock %}
+
+{% block content %}
+    <!-- Main content container -->
+    <main class="flex-grow bg-background">
+
+        <!-- Header Section -->
+        <section class="mb-6 justify-center mt-10">
+            <div class="container relative">
+                <div class="relative z-30 flex items-center justify-between gap-x-4 mb-10">
+                    <!-- Developer -->
+                    <div class="flex flex-col items-start">
+                        <span class="dark:text-white text-primary">Developed by</span>
+                        <a href="https://taplink.cc/alidolat" target="_blank" class="text-primary">Ali Dolat</a>
+                    </div>
+                    <!-- NEWS PLUG Logo -->
+                    <div class="justify-items-center">
+                        <a href="{% url 'news_list' %}">
+                            <img alt="logo" class="w-44" src="static/images/newsplug.png"/>
+                        </a>
+                    </div>
+                    <!-- Theme Toggle Button -->
+                    <div class="flex items-center gap-x-6">
+                        <div class="flex cursor-pointer items-center gap-x-2 rounded-lg text-primary"
+                             id="toggleThemeDesktop">
+                            <div dir="rtl" class="flex items-center justify-between" id="themeText"></div>
+                            <div>
+                                <div class="dark:hidden">
+                                    <svg class="h-6 w-6">
+                                        <use xlink:href="#moon"></use>
+                                    </svg>
+                                </div>
+                                <div class="hidden dark:block">
+                                    <svg class="h-6 w-6">
+                                        <use xlink:href="#sun"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </section>
+
+        <!-- Search Form Section -->
+        <section class="mb-2 justify-center">
+            <div class="container relative py-6">
+                <form id="news-search-form" action="{% url 'news_list' %}"
+                      class="flex flex-wrap md:flex-nowrap gap-4 items-center">
+                    <!-- SEARCH INPUT -->
+                    <input type="text" name="q" placeholder="Find The Buzz.." value="{{ request.GET.q }}"
+                           class="flex-grow px-4 py-2 border border-gray-300 rounded-md">
+                    <!-- CATEGORY Dropdown -->
+                    <select name="category" class="px-3 py-2 border border-gray-300 rounded-md">
+                        <option value="">All Categories</option>
+                        <option value="business" {% if request.GET.category == "business" %}selected{% endif %}>
+                            Business
+                        </option>
+                        <option value="entertainment"
+                                {% if request.GET.category == "entertainment" %}selected{% endif %}>Entertainment
+                        </option>
+                        <option value="general" {% if request.GET.category == "general" %}selected{% endif %}>General
+                        </option>
+                        <option value="health" {% if request.GET.category == "health" %}selected{% endif %}>Health
+                        </option>
+                        <option value="science" {% if request.GET.category == "science" %}selected{% endif %}>Science
+                        </option>
+                        <option value="sports" {% if request.GET.category == "sports" %}selected{% endif %}>Sports
+                        </option>
+                        <option value="technology" {% if request.GET.category == "technology" %}selected{% endif %}>
+                            Technology
+                        </option>
+                    </select>
+                    <!-- SORT BY Dropdown -->
+                    <select name="sortBy" class="px-3 py-2 border border-gray-300 rounded-md">
+                        <option value="publishedAt" {% if request.GET.sortBy == "publishedAt" %}selected{% endif %}>
+                            Newest
+                        </option>
+                        <option value="popularity" {% if request.GET.sortBy == "popularity" %}selected{% endif %}>
+                            Hottest
+                        </option>
+                        <option value="relevancy" {% if request.GET.sortBy == "relevancy" %}selected{% endif %}>
+                            Relevance
+                        </option>
+                    </select>
+                    <!-- PAGE SIZE Dropdown -->
+                    <select name="pageSize" class="w-24 px-2 py-2 border border-gray-300 rounded-md">
+                        <option value="12" {% if request.GET.pageSize == "12" %}selected{% endif %}>12</option>
+                        <option value="24" {% if request.GET.pageSize == "24" %}selected{% endif %}>24</option>
+                        <option value="48" {% if request.GET.pageSize == "48" %}selected{% endif %}>48</option>
+                        <option value="100" {% if request.GET.pageSize == "100" %}selected{% endif %}>100</option>
+                    </select>
+                    <!-- Submit Button -->
+                    <button type="submit" class="px-4 py-2 btn-primary text-white rounded-md">Search</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- News Results Section -->
+        <section class="mb-6">
+            <div class="container relative">
+                <div class="mb-2 flex items-center justify-between">
+                    <!-- Pagination -->
+                    {% if current_page > 1 %}
+                        <a id="prev-button" class="flex items-center gap-x-2 py-2 text-sm text-primary lg:text-base"
+                           href="?{% for key, value in query_params.items %}{{ key }}={{ value }}&{% endfor %}page={{ current_page|add:'-1' }}">
+                            <svg class="h-5 w-5 lg:h-6 lg:w-6">
+                                <use xlink:href="#chevron-left"></use>
+                            </svg>
+                            Previous
+                        </a>
+                    {% endif %}
+
+                    {% if news_articles %}
+                        <h3 class="font-medium md:text-lg lg:text-xl">Results For "{{ request.GET.q }}"</h3>
+                    {% endif %}
+
+                    {% if current_page < total_pages %}
+                        <a id="next-button" class="flex items-center gap-x-2 py-2 text-sm text-primary lg:text-base"
+                           href="?{% for key, value in query_params.items %}{{ key }}={{ value }}&{% endfor %}page={{ current_page|add:'1' }}">
+                            Next
+                            <svg class="h-5 w-5 lg:h-6 lg:w-6">
+                                <use xlink:href="#chevron-right"></use>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Display Articles -->
+                <div class="blog-grid grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {% if news_articles %}
+                        {% for article in news_articles %}
+                            {% if article.url != 'https://removed.com' %}
+                                {% include 'news/partials/news_results.html' %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- No Articles or Error Message -->
+                {% if not news_articles %}
+                    <div class="justify-center justify-items-center">
+                        <div class="text-center justify-center">
+                            <img src="static/images/wormhole.png" draggable="false" alt="pic">
+                        </div>
+                        <p class="text-text/90 text-xl mt-2">Catch The Headlines!</p>
+                    </div>
+                {% elif error_message %}
+                    <div class="justify-center justify-items-center">
+                        <div class="text-center justify-center">
+                            <img src="static/images/wormhole.png" draggable="false" alt="pic">
+                        </div>
+                        <p class="text-text/90 text-xl mt-2">{{ error_message }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+{% endblock %}

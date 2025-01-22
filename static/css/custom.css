@@ -1,0 +1,10 @@
+.hover-green {
+    color: #3dc397;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.hover-green:hover {
+    color: #359f7d;
+}
