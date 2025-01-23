@@ -13,17 +13,13 @@ NewsHub is a news aggregator website made using NewsAPI to fetch the latest news
 - Python 3.x
 - Django
 - NewsAPI
-- HTML/CSS (for front-end design)
 
 ## Installation
 
 ### Prerequisites
 - Python 3.x
+- Django
 - Virtual environment (recommended)
-
-### Steps
-
-1. Clone the repository:
 
 ```bash
 git clone https://github.com/alidowlat/News-Plug.git
