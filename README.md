@@ -1,5 +1,8 @@
 # News Plug - A News Aggregator Website
 
+## Live Demo
+Check out the live version of the project here: [News Plug](http://alidolat.pythonanywhere.com)
+
 ## Description
 NewsHub is a news aggregator website made using NewsAPI to fetch the latest news for users. It allows users to search for news by categories, languages, and other filters. The site supports pagination for seamless browsing and has an excellent front-end design for better usability.
 
